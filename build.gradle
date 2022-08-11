@@ -1,0 +1,63 @@
+plugins {
+	id 'java'
+	id 'application'
+	id 'eclipse'
+	id 'idea'
+	id 'edu.sc.seis.launch4j' version '2.5.3'
+	id 'com.github.johnrengelman.shadow' version '7.1.+'
+}
+
+repositories {
+	mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+version = '1.0.0'
+mainClassName = 'com.github.felixvolo.ts5ai.TS5AddonInstaller'
+
+dependencies {
+    shadow "com.fasterxml.jackson.core:jackson-databind:2.13.+"
+	shadow "org.apache.maven:maven-artifact:3.0.+"
+}
+
+jar {
+	manifest {
+		attributes 'Main-Class': mainClassName
+	}
+	
+	from {
+		configurations.runtimeClasspath.collect {
+			it.isDirectory() ? it : zipTree(it)
+		}
+	}
+	
+	from 'LICENSE'
+	
+	duplicatesStrategy = 'include'
+}
+
+launch4j {
+	mainClassName = mainClassName
+	jarTask = project.tasks.shadowJar
+	manifest = "$projectDir/${name}.manifest"
+	copyright = 'MIT License'
+	companyName = 'FelixVolo'
+	fileDescription = project.name
+	productName = project.name
+	internalName = project.name
+	version = project.version
+	textVersion = project.version
+}
+
+shadowJar {
+	configurations = [project.configurations.compileClasspath]
+	from sourceSets.main.output
+	from 'LICENSE'
+	duplicatesStrategy = 'exclude'
+	exclude('META-INF/**')
+}
