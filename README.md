@@ -3,7 +3,7 @@ The TS5 Addon Installer is an unofficial tool that simplifies the process of ins
 
 ⚠️ Addons need to be reinstalled after every TeamSpeak update
 
-## List of included Addons
+## List of Included Addons
 
 | Addon | Description |
 | ----- | ----------- |
