@@ -3,6 +3,12 @@ The TS5 Addon Installer is an unofficial tool that simplifies the process of ins
 
 ⚠️ Addons need to be reinstalled after every TeamSpeak update
 
+## List of included Addons
+
+| Addon | Description |
+| ----- | ----------- |
+| [BetterChat](https://github.com/Exopandora/BetterChat) | Support for BBCodes and rich embeds | 
+
 ## Installing Addons ##
 The TS5 Addon Installer can automatically download and install addons or install them from zip files.
 
