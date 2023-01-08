@@ -1,16 +1,18 @@
 package com.github.felixvolo.ts5ai.controller;
 
+import static com.github.felixvolo.ts5ai.view.Window.TITLE;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import com.github.felixvolo.ts5ai.model.InstalledAddon;
-import com.github.felixvolo.ts5ai.util.Util;
+import com.github.felixvolo.ts5ai.model.Installer;
 import com.github.felixvolo.ts5ai.view.UninstallPane;
-import com.github.felixvolo.ts5ai.view.Window;
 
 public class UninstallController {
 	private final MainController mainController;
@@ -29,13 +31,13 @@ public class UninstallController {
 	
 	private void loadAddons(boolean showEmptyWarningMessage) {
 		String installDir = this.mainController.getInstallDir();
-		if(!MainController.isValidInstallationPath(installDir, false)) {
-			return;
-		}
-		String indexPath = installDir + MainController.INDEX_PATH;
 		try {
-			String index = Util.readFile(indexPath);
-			List<InstalledAddon> installedAddons = MainController.findInstalledAddons(index);
+			Installer.validateInstallationPath(installDir, false);
+		} catch(Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), TITLE, ERROR_MESSAGE);
+		}
+		try {
+			List<InstalledAddon> installedAddons = Installer.installedAddons(installDir);
 			installedAddons.sort((a, b) -> a.getName().compareTo(b.getName()));
 			this.uninstallPane.getAddonComboBox().removeAllItems();
 			for(InstalledAddon installedAddon : installedAddons) {
@@ -44,33 +46,29 @@ public class UninstallController {
 			this.uninstallPane.getUninstallButton().setEnabled(!installedAddons.isEmpty());
 			this.uninstallPane.getAddonComboBox().setEnabled(!installedAddons.isEmpty());
 			if(showEmptyWarningMessage && installedAddons.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Could not find any installed addons", Window.TITLE, JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Could not find any installed addons", TITLE, WARNING_MESSAGE);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Could not find installed addons:\n" + e.getMessage(), Window.TITLE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Could not find installed addons:\n" + e.getMessage(), TITLE, ERROR_MESSAGE);
 		}
 	}
 	
 	private void uninstall(ActionEvent action) {
 		String installDir = this.mainController.getInstallDir();
-		if(!MainController.isValidInstallationPath(installDir, true)) {
-			return;
+		try {
+			Installer.validateInstallationPath(installDir, false);
+		} catch(Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), TITLE, ERROR_MESSAGE);
 		}
 		InstalledAddon addon = (InstalledAddon) this.uninstallPane.getAddonComboBox().getSelectedItem();
 		assert addon != null;
 		try {
-			String indexPath = installDir + MainController.INDEX_PATH;
-			String index = Util.readFile(indexPath);
-			index = MainController.removeAddonFromIndex(index, addon);
-			Util.writeFile(indexPath, index);
-			String addonPath = installDir + MainController.CLIENT_UI_PATH + addon.getId();
-			MainController.deleteAddonFolder(new File(addonPath));
-			JOptionPane.showMessageDialog(null, "The addon " + addon.getName() + " has been successfully uninstalled", Window.TITLE, JOptionPane.INFORMATION_MESSAGE);
+			Installer.uninstall(addon, installDir);
+			JOptionPane.showMessageDialog(null, "The addon " + addon.getName() + " has been successfully uninstalled", TITLE, INFORMATION_MESSAGE);
 			this.loadAddons(false);
-		} catch(IOException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error uninstalling addon " + addon.getName() + ":\n" + e.getMessage(), Window.TITLE, JOptionPane.ERROR_MESSAGE);
+		} catch(Exception e) {
+			JOptionPane.showMessageDialog(null, "Error uninstalling addon " + addon.getName() + ":\n" + e.getMessage(), TITLE, ERROR_MESSAGE);
 		}
 	}
 	

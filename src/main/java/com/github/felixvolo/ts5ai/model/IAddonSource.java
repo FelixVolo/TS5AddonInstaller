@@ -1,15 +1,12 @@
 package com.github.felixvolo.ts5ai.model;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.zip.ZipFile;
+import java.util.Iterator;
 
-public interface IAddonSource {
-	Path setupZipPath(String zipPath) throws IOException;
+public interface IAddonSource extends AutoCloseable {
+	void open() throws IOException;
 	
-	ZipFile openZipFile(Path zipPath) throws IOException;
+	String read(String path) throws IOException;
 	
-	void cleanupZipPath(Path zipPath);
-	
-	String getName();
+	Iterator<String> entries() throws IOException;
 }

@@ -1,33 +1,32 @@
 package com.github.felixvolo.ts5ai.controller;
 
+import static com.github.felixvolo.ts5ai.util.OS.LINUX;
+import static com.github.felixvolo.ts5ai.util.OS.MAC_OS;
+import static com.github.felixvolo.ts5ai.util.OS.OPERATING_SYSTEM;
+import static com.github.felixvolo.ts5ai.util.OS.WINDOWS;
+import static com.github.felixvolo.ts5ai.view.Window.TITLE;
+import static javax.swing.JFileChooser.APPROVE_OPTION;
+import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 
-import com.github.felixvolo.ts5ai.model.InstalledAddon;
 import com.github.felixvolo.ts5ai.util.SimpleDocumentListener;
-import com.github.felixvolo.ts5ai.util.Util;
 import com.github.felixvolo.ts5ai.view.InstallDirPane;
+import com.github.felixvolo.ts5ai.view.InstallPane;
+import com.github.felixvolo.ts5ai.view.UninstallPane;
 import com.github.felixvolo.ts5ai.view.Window;
 
 public class MainController implements Runnable {
-	protected static final int SCHEMA_VERSION = 1;
-	protected static final Pattern ADDON_START_REGEX = Pattern.compile("<!-- ADDON_START v(\\d+) ([A-Za-z_0-9]+) ((?:\\d+\\.|\\d)*\\d) \"(.+)\" -->");
-	protected static final String ADDON_END_STRING = "<!-- ADDON_END -->";
-	protected static final String CLIENT_UI_PATH = "/html/client_ui/";
-	protected static final String INDEX_PATH = CLIENT_UI_PATH + "index.html";
-	
-	private String installDir = Util.findTeamSpeakInstallDir().map(File::toString).orElseGet(() -> {
-		JOptionPane.showMessageDialog(null, "Unsupported Operating System", Window.TITLE, JOptionPane.ERROR_MESSAGE);
+	private String installDir = MainController.findTeamSpeakInstallDir().map(File::toString).orElseGet(() -> {
+		JOptionPane.showMessageDialog(null, "Unsupported Operating System", TITLE, ERROR_MESSAGE);
 		System.exit(1);
 		return null;
 	});
@@ -37,12 +36,15 @@ public class MainController implements Runnable {
 	
 	public MainController() {
 		this.window.getTabbedPane().addChangeListener(this::onTabChanged);
-		this.installController.getInstallPane().getInstallDirTextField().setText(this.installDir);
-		this.installController.getInstallPane().getInstallDirTextField().getDocument().addDocumentListener(new SimpleDocumentListener(this::onInstallDirChanged));
-		this.installController.getInstallPane().getSelectInstallDirButton().addActionListener(this::selectInstallDir);
-		this.uninstallController.getUninstallPane().getInstallDirTextField().setText(this.installDir);
-		this.uninstallController.getUninstallPane().getInstallDirTextField().getDocument().addDocumentListener(new SimpleDocumentListener(this::onInstallDirChanged));
-		this.uninstallController.getUninstallPane().getSelectInstallDirButton().addActionListener(this::selectInstallDir);
+		SimpleDocumentListener documentListener = new SimpleDocumentListener(this::onInstallDirChanged);
+		InstallPane installPane = this.installController.getInstallPane();
+		installPane.getInstallDirTextField().setText(this.installDir);
+		installPane.getInstallDirTextField().getDocument().addDocumentListener(documentListener);
+		installPane.getSelectInstallDirButton().addActionListener(this::selectInstallDir);
+		UninstallPane uninstallPane = this.uninstallController.getUninstallPane();
+		uninstallPane.getInstallDirTextField().setText(this.installDir);
+		uninstallPane.getInstallDirTextField().getDocument().addDocumentListener(documentListener);
+		uninstallPane.getSelectInstallDirButton().addActionListener(this::selectInstallDir);
 	}
 	
 	@Override
@@ -61,12 +63,12 @@ public class MainController implements Runnable {
 	private void selectInstallDir(ActionEvent event) {
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new File("."));
-		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		chooser.setFileSelectionMode(DIRECTORIES_ONLY);
 		int result = chooser.showSaveDialog(this.window);
-		if(result == JFileChooser.APPROVE_OPTION) {
+		if(result == APPROVE_OPTION) {
 			this.getInstallDirPane().getInstallDirTextField().setText(chooser.getSelectedFile().getAbsolutePath());
 		}
-		this.installController.updateInstallButton();
+		this.installController.updateInterface();
 	}
 	
 	private InstallDirPane getInstallDirPane() {
@@ -81,56 +83,28 @@ public class MainController implements Runnable {
 		return this.installDir;
 	}
 	
-	public static boolean isValidInstallationPath(String path, boolean checkWritePermission) {
-		File installDir = new File(path);
-		if(!installDir.exists() || !installDir.isDirectory()) {
-			JOptionPane.showMessageDialog(null, "The installation directory does not exist", Window.TITLE, JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		File clientUiDir = new File(installDir, CLIENT_UI_PATH);
-		if(!clientUiDir.exists() || !clientUiDir.isDirectory()) {
-			JOptionPane.showMessageDialog(null, "Could not detect a valid TeamSpeak 5 installation in \"" + installDir.toString() + "\"", Window.TITLE, JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		if(checkWritePermission && !Files.isWritable(installDir.toPath())) {
-			JOptionPane.showMessageDialog(null, "Unable to modify current installation:\nMissing write permissions for \"" + installDir.toString() + "\"", Window.TITLE, JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		return true;
-	}
-	
-	public static List<InstalledAddon> findInstalledAddons(String index) {
-		List<InstalledAddon> addons = new ArrayList<InstalledAddon>();
-		Matcher matcher = MainController.ADDON_START_REGEX.matcher(index);
-		while(matcher.find()) {
-			try {
-				int schemaVersion = Integer.parseInt(matcher.group(1));
-				if(schemaVersion == 1) {
-					String id = matcher.group(2);
-					String version = matcher.group(3);
-					String name = matcher.group(4);
-					int startIndex = matcher.start();
-					int endIndex = index.indexOf(MainController.ADDON_END_STRING, startIndex) + MainController.ADDON_END_STRING.length();
-					addons.add(new InstalledAddon(id, name, version, startIndex, endIndex));
+	private static Optional<File> findTeamSpeakInstallDir() {
+		return OPERATING_SYSTEM.map(os -> {
+			if(WINDOWS.equals(os)) {
+				File file = new File(System.getenv("ProgramFiles"), "TeamSpeak");
+				if(file.exists()) {
+					return file;
 				}
-			} catch(Exception e) {
-				e.printStackTrace();
+				return new File(System.getenv("LOCALAPPDATA"), "Programs/TeamSpeak");
+			} else if(MAC_OS.equals(os)) {
+				return new File("/Applications/TeamSpeak.app");
+			} else if(LINUX.equals(os)) {
+				File file = new File(System.getProperty("user.home"), ".local/share/TeamSpeak");
+				if(file.exists()) {
+					return file;
+				}
+				file = new File("/opt/TeamSpeak/");
+				if(file.exists()) {
+					return file;
+				}
+				return new File(System.getProperty("user.home"), "Programs/TeamSpeak");
 			}
-		}
-		return addons;
-	}
-	
-	public static String removeAddonFromIndex(String index, InstalledAddon installedAddon) {
-		return index.substring(0, installedAddon.getStartIndex()) + index.substring(installedAddon.getEndIndex());
-	}
-	
-	public static void deleteAddonFolder(File addonPath) {
-		File[] files = addonPath.listFiles();
-		if(files != null) {
-			for(File file : files) {
-				deleteAddonFolder(file);
-			}
-		}
-		addonPath.delete();
+			throw new IllegalArgumentException("Unknown operating system " + os);
+		});
 	}
 }

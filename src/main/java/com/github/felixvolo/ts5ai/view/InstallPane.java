@@ -1,5 +1,8 @@
 package com.github.felixvolo.ts5ai.view;
 
+import static java.awt.GridBagConstraints.EAST;
+import static java.awt.GridBagConstraints.HORIZONTAL;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -10,19 +13,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.github.felixvolo.ts5ai.model.IAddonSource;
-
 @SuppressWarnings("serial")
 public class InstallPane extends JPanel implements InstallDirPane {
 	private final JLabel installDirLabel = new JLabel("Installation Directory");
 	private final JTextField installDirTextField = new JTextField();
 	private final JButton selectInstallDirButton = new JButton("...");
 	private final JLabel addonLabel = new JLabel("Addon");
-	private final JComboBox<IAddonSource> addonComboBox = new JComboBox<>();
-	private final JLabel addonFileLabel = new JLabel("Addon File");
-	private final JButton selectAddonFileButton = new JButton("...");
+	private final JComboBox<AddonEntry> addonComboBox = new JComboBox<AddonEntry>();
+	private final JLabel addonLocationLabel = new JLabel("Addon Location");
+	private final JTextField selectAddonLocationTextField = new JTextField();
+	private final JButton selectAddonLocationButton = new JButton("...");
+	private final JComboBox<Object> versionComboBox = new JComboBox<Object>();
+	private final JLabel versionLabel = new JLabel("Version");
+	private final JButton loadVersionsButton = new JButton("Load");
 	private final JButton installButton = new JButton("Install");
-	private final JTextField selectAddonFileTextField = new JTextField();
 	
 	public InstallPane() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -41,20 +45,20 @@ public class InstallPane extends JPanel implements InstallDirPane {
 		
 		GridBagConstraints installDirTextFieldGbc = new GridBagConstraints();
 		installDirTextFieldGbc.insets = new Insets(10, 0, 10, 0);
-		installDirTextFieldGbc.fill = GridBagConstraints.HORIZONTAL;
+		installDirTextFieldGbc.fill = HORIZONTAL;
 		installDirTextFieldGbc.gridx = 1;
 		installDirTextFieldGbc.gridy = 0;
 		this.add(this.installDirTextField, installDirTextFieldGbc);
 		
 		GridBagConstraints selectInstallDirButtonGbc = new GridBagConstraints();
 		selectInstallDirButtonGbc.insets = new Insets(10, 0, 10, 10);
-		selectInstallDirButtonGbc.fill = GridBagConstraints.HORIZONTAL;
+		selectInstallDirButtonGbc.fill = HORIZONTAL;
 		selectInstallDirButtonGbc.gridx = 2;
 		selectInstallDirButtonGbc.gridy = 0;
 		this.add(this.selectInstallDirButton, selectInstallDirButtonGbc);
 		
 		GridBagConstraints addonLabelGbc = new GridBagConstraints();
-		addonLabelGbc.anchor = GridBagConstraints.EAST;
+		addonLabelGbc.anchor = EAST;
 		addonLabelGbc.insets = new Insets(0, 10, 10, 10);
 		addonLabelGbc.gridx = 0;
 		addonLabelGbc.gridy = 1;
@@ -63,37 +67,57 @@ public class InstallPane extends JPanel implements InstallDirPane {
 		GridBagConstraints addonComboBoxGbc = new GridBagConstraints();
 		addonComboBoxGbc.gridwidth = 2;
 		addonComboBoxGbc.insets = new Insets(0, 0, 10, 10);
-		addonComboBoxGbc.fill = GridBagConstraints.HORIZONTAL;
+		addonComboBoxGbc.fill = HORIZONTAL;
 		addonComboBoxGbc.gridx = 1;
 		addonComboBoxGbc.gridy = 1;
 		this.add(this.addonComboBox, addonComboBoxGbc);
 		
 		GridBagConstraints addonFileLabelGbc = new GridBagConstraints();
-		addonFileLabelGbc.anchor = GridBagConstraints.EAST;
+		addonFileLabelGbc.anchor = EAST;
 		addonFileLabelGbc.insets = new Insets(0, 10, 10, 10);
 		addonFileLabelGbc.gridx = 0;
 		addonFileLabelGbc.gridy = 2;
-		this.add(this.addonFileLabel, addonFileLabelGbc);
+		this.add(this.addonLocationLabel, addonFileLabelGbc);
 		
-		this.selectAddonFileTextField.setColumns(1);
+		this.selectAddonLocationTextField.setColumns(1);
 		GridBagConstraints selectAddonFileTextFieldGbc = new GridBagConstraints();
 		selectAddonFileTextFieldGbc.insets = new Insets(0, 0, 10, 0);
-		selectAddonFileTextFieldGbc.fill = GridBagConstraints.HORIZONTAL;
+		selectAddonFileTextFieldGbc.fill = HORIZONTAL;
 		selectAddonFileTextFieldGbc.gridx = 1;
 		selectAddonFileTextFieldGbc.gridy = 2;
-		this.add(this.selectAddonFileTextField, selectAddonFileTextFieldGbc);
+		this.add(this.selectAddonLocationTextField, selectAddonFileTextFieldGbc);
 		
 		GridBagConstraints selectAddonFileButtonGbc = new GridBagConstraints();
 		selectAddonFileButtonGbc.insets = new Insets(0, 0, 10, 10);
 		selectAddonFileButtonGbc.gridx = 2;
 		selectAddonFileButtonGbc.gridy = 2;
-		this.add(this.selectAddonFileButton, selectAddonFileButtonGbc);
+		this.add(this.selectAddonLocationButton, selectAddonFileButtonGbc);
+		
+		GridBagConstraints versionLabelGbc = new GridBagConstraints();
+		versionLabelGbc.anchor = EAST;
+		versionLabelGbc.insets = new Insets(0, 10, 10, 10);
+		versionLabelGbc.gridx = 0;
+		versionLabelGbc.gridy = 3;
+		this.add(this.versionLabel, versionLabelGbc);
+		
+		GridBagConstraints versionComboBoxGbc = new GridBagConstraints();
+		versionComboBoxGbc.insets = new Insets(0, 0, 10, 0);
+		versionComboBoxGbc.fill = HORIZONTAL;
+		versionComboBoxGbc.gridx = 1;
+		versionComboBoxGbc.gridy = 3;
+		this.add(this.versionComboBox, versionComboBoxGbc);
+		
+		GridBagConstraints loadVersionsButtonGbc = new GridBagConstraints();
+		loadVersionsButtonGbc.insets = new Insets(0, 0, 10, 10);
+		loadVersionsButtonGbc.gridx = 2;
+		loadVersionsButtonGbc.gridy = 3;
+		this.add(this.loadVersionsButton, loadVersionsButtonGbc);
 		
 		GridBagConstraints installButtonGbc = new GridBagConstraints();
 		installButtonGbc.gridwidth = 3;
 		installButtonGbc.insets = new Insets(0, 0, 10, 10);
 		installButtonGbc.gridx = 0;
-		installButtonGbc.gridy = 3;
+		installButtonGbc.gridy = 4;
 		this.add(this.installButton, installButtonGbc);
 	}
 	
@@ -114,23 +138,35 @@ public class InstallPane extends JPanel implements InstallDirPane {
 		return this.addonLabel;
 	}
 	
-	public JComboBox<IAddonSource> getAddonComboBox() {
+	public JComboBox<AddonEntry> getAddonComboBox() {
 		return this.addonComboBox;
 	}
 	
-	public JLabel getAddonFileLabel() {
-		return this.addonFileLabel;
+	public JLabel getAddonLocationLabel() {
+		return this.addonLocationLabel;
 	}
 	
-	public JButton getSelectAddonFileButton() {
-		return this.selectAddonFileButton;
+	public JButton getSelectAddonLocationButton() {
+		return this.selectAddonLocationButton;
 	}
 	
 	public JButton getInstallButton() {
 		return this.installButton;
 	}
 	
-	public JTextField getSelectAddonFileTextField() {
-		return this.selectAddonFileTextField;
+	public JTextField getSelectAddonLocationTextField() {
+		return this.selectAddonLocationTextField;
+	}
+	
+	public JButton getLoadVersionsButton() {
+		return this.loadVersionsButton;
+	}
+	
+	public JComboBox<Object> getVersionComboBox() {
+		return this.versionComboBox;
+	}
+	
+	public JLabel getVersionLabel() {
+		return this.versionLabel;
 	}
 }

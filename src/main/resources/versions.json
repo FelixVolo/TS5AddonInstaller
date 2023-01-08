@@ -1,0 +1,15 @@
+{
+	"windows": {
+		"601919a383a281aec236f9d7895d3e34": "5.0.0-beta72",
+		"ec7f3793c51a8de8af225be4eab0a90a": "5.0.0-beta72",
+		"1d56937a7678faa27a0696a33a43f30a": "5.0.0-beta70"
+	},
+	"linux": {
+		"ed45f6c333b26090d03dd6f7c9197e05": "5.0.0-beta72",
+		"2d39264df62157ec3b12005e326a2174": "5.0.0-beta72",
+		"49527ebdb6774669cd8ffa22a9c6a974": "5.0.0-beta70"
+	},
+	"macos": {
+		"aa508f7061ecfc1b102cc3fa2a7f11d8": "5.0.0-beta70"
+	}
+}

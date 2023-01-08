@@ -1,5 +1,8 @@
 package com.github.felixvolo.ts5ai.view;
 
+import static java.awt.GridBagConstraints.EAST;
+import static java.awt.GridBagConstraints.HORIZONTAL;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -32,27 +35,27 @@ public class UninstallPane extends JPanel implements InstallDirPane {
 		
 		GridBagConstraints installDirLabelGbc = new GridBagConstraints();
 		installDirLabelGbc.insets = new Insets(10, 10, 10, 10);
-		installDirLabelGbc.anchor = GridBagConstraints.EAST;
+		installDirLabelGbc.anchor = EAST;
 		installDirLabelGbc.gridx = 0;
 		installDirLabelGbc.gridy = 0;
 		this.add(this.installDirLabel, installDirLabelGbc);
 		
 		GridBagConstraints installDirTextFieldGbc = new GridBagConstraints();
 		installDirTextFieldGbc.insets = new Insets(10, 0, 10, 0);
-		installDirTextFieldGbc.fill = GridBagConstraints.HORIZONTAL;
+		installDirTextFieldGbc.fill = HORIZONTAL;
 		installDirTextFieldGbc.gridx = 1;
 		installDirTextFieldGbc.gridy = 0;
 		this.add(this.installDirTextField, installDirTextFieldGbc);
 		
 		GridBagConstraints selectInstallDirButtonGbc = new GridBagConstraints();
 		selectInstallDirButtonGbc.insets = new Insets(10, 0, 10, 10);
-		selectInstallDirButtonGbc.fill = GridBagConstraints.HORIZONTAL;
+		selectInstallDirButtonGbc.fill = HORIZONTAL;
 		selectInstallDirButtonGbc.gridx = 2;
 		selectInstallDirButtonGbc.gridy = 0;
 		this.add(this.selectInstallDirButton, selectInstallDirButtonGbc);
 		
 		GridBagConstraints addonLabelGbc = new GridBagConstraints();
-		addonLabelGbc.anchor = GridBagConstraints.EAST;
+		addonLabelGbc.anchor = EAST;
 		addonLabelGbc.insets = new Insets(0, 10, 10, 10);
 		addonLabelGbc.gridx = 0;
 		addonLabelGbc.gridy = 1;
@@ -61,7 +64,7 @@ public class UninstallPane extends JPanel implements InstallDirPane {
 		this.addonComboBox.setEnabled(false);
 		GridBagConstraints addonComboBoxGbc = new GridBagConstraints();
 		addonComboBoxGbc.insets = new Insets(0, 0, 10, 0);
-		addonComboBoxGbc.fill = GridBagConstraints.HORIZONTAL;
+		addonComboBoxGbc.fill = HORIZONTAL;
 		addonComboBoxGbc.gridx = 1;
 		addonComboBoxGbc.gridy = 1;
 		this.add(this.addonComboBox, addonComboBoxGbc);

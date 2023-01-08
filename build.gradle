@@ -17,12 +17,14 @@ java {
     }
 }
 
-version = '1.0.0'
+version = '2.0.0'
 mainClassName = 'com.github.felixvolo.ts5ai.TS5AddonInstaller'
 
 dependencies {
-    shadow "com.fasterxml.jackson.core:jackson-databind:2.13.+"
-	shadow "org.apache.maven:maven-artifact:3.0.+"
+    shadow "com.fasterxml.jackson.core:jackson-databind:2.14.+"
+	shadow "commons-cli:commons-cli:1.5.0"
+	shadow "org.dom4j:dom4j:2.1.3"
+	shadow "com.vdurmont:semver4j:3.1.0"
 }
 
 jar {
