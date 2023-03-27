@@ -49,7 +49,8 @@ $ java -jar TS5AddonInstaller.jar [OPTIONS] <TEAMSPEAK_PATH>
 ## Compatibility ##
 | TeamSpeak | Windows | Linux | MacOS |
 | ------- | ------- | ----- | ----- |
-| Beta 72 | 2.0.0 | 2.0.0 | n/a |
+| Beta 73 | 2.1.0 | 2.1.0 | 2.1.0 |
+| Beta 72 | 2.0.0 - 2.1.0 | 2.0.0 - 2.1.0 | n/a |
 | Beta 71 | ❌ | ❌ | n/a |
 | Beta 70 | 1.0.0 - 2.0.0 | 1.0.0 - 2.0.0 | 1.0.0 - 2.0.0 |
 
@@ -81,7 +82,7 @@ Example:
 	"inject_at": "TAIL",
 	"sources": "src/",
 	"installer": "~2.0.0",
-	"teamspeak": "5.0.0-beta72"
+	"teamspeak": "5.0.0-beta73"
 }
 ```
 A full example addon can be found [here](https://github.com/Exopandora/BetterChat)
