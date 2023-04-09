@@ -67,9 +67,9 @@ public class TS5AddonInstaller {
 		try {
 			CommandLineParser parser = new DefaultParser();
 			CommandLine cmd = parser.parse(options, args);
-			if(cmd.hasOption("help")) {
+			if(cmd.hasOption(help)) {
 				printHelp(options);
-			} else if(cmd.hasOption("v")) {
+			} else if(cmd.hasOption(version)) {
 				System.out.println("Version: " + VERSION);
 			} else if(cmd.hasOption(install)) {
 				checkArgListSize(cmd);
