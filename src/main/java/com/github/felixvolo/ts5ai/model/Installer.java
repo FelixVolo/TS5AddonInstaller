@@ -6,9 +6,7 @@ import static com.github.felixvolo.ts5ai.util.Util.OBJECT_MAPPER;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -157,9 +155,7 @@ public class Installer {
 	}
 	
 	public static List<Entry<Semver, String>> loadVersions(URL versionUrl) throws IOException {
-		URLConnection connection = versionUrl.openConnection();
-		InputStream inputStream = connection.getInputStream();
-		Map<Semver, String> versionMap = OBJECT_MAPPER.readValue(inputStream, new TypeReference<Map<Semver, String>>() {});
+		Map<Semver, String> versionMap = OBJECT_MAPPER.readValue(versionUrl, new TypeReference<Map<Semver, String>>() {});
 		List<Entry<Semver, String>> versions = new ArrayList<Entry<Semver, String>>(versionMap.entrySet());
 		versions.sort(Comparator.comparing(Entry::getKey, Comparator.reverseOrder()));
 		return versions;
