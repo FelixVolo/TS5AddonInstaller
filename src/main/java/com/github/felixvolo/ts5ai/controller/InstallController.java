@@ -20,13 +20,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.felixvolo.ts5ai.model.Addon;
 import com.github.felixvolo.ts5ai.model.FolderAddonSource;
 import com.github.felixvolo.ts5ai.model.IAddonSource;
 import com.github.felixvolo.ts5ai.model.Installer;
@@ -123,44 +127,75 @@ public class InstallController {
 	}
 	
 	private void loadVersions(ActionEvent event) {
-		RemoteAddonEntry addon = (RemoteAddonEntry) this.installPane.getAddonComboBox().getSelectedItem();
-		assert addon != null;
-		try {
-			List<Entry<Semver, String>> versions = Installer.loadVersions(addon.getVersionIndex());
-			JComboBox<Object> versionComboBox = this.installPane.getVersionComboBox();
-			versionComboBox.removeAllItems();
-			for(Entry<Semver, String> entry : versions) {
-				versionComboBox.addItem(entry.getKey());
+		JButton loadVersionsButton = this.installPane.getLoadVersionsButton();
+		loadVersionsButton.setEnabled(false);
+		SwingWorker<List<Entry<Semver, String>>, Void> worker = new SwingWorker<List<Entry<Semver, String>>, Void>() {
+			@Override
+			protected List<Entry<Semver, String>> doInBackground() throws Exception {
+				RemoteAddonEntry addon = (RemoteAddonEntry) InstallController.this.installPane.getAddonComboBox().getSelectedItem();
+				assert addon != null;
+				List<Entry<Semver, String>> versions = Installer.loadVersions(addon.getVersionIndex());
+				InstallController.this.versionCache.put(addon.getName(), versions);
+				return versions;
 			}
-			this.versionCache.put(addon.getName(), versions);
-		} catch(Exception e) {
-			JOptionPane.showMessageDialog(null, "Failed to load versions (" + e.getMessage() + ")", TITLE, ERROR_MESSAGE);
-		}
+			
+			@Override
+			protected void done() {
+				try {
+					List<Entry<Semver, String>> versions = this.get();
+					JComboBox<Object> versionComboBox = InstallController.this.installPane.getVersionComboBox();
+					versionComboBox.removeAllItems();
+					for(Entry<Semver, String> entry : versions) {
+						versionComboBox.addItem(entry.getKey());
+					}
+				} catch(Exception e) {
+					Throwable cause = e.getCause() != null ? e.getCause() : e;
+					JOptionPane.showMessageDialog(null, "Failed to load versions (" + cause.getMessage() + ")", TITLE, ERROR_MESSAGE);
+				}
+				loadVersionsButton.setEnabled(true);
+			}
+		};
+		worker.execute();
 	}
 	
 	private void install(ActionEvent event) {
-		try {
-			String installDir = this.mainController.getInstallDir();
-			Installer.validateInstallationPath(installDir, true);
-			try(IAddonSource addonSource = this.getAddonSource()) {
-				Installer.install(addonSource, installDir, (addon, installedAddon, compareResult) -> {
-					String message;
-					if(compareResult < 0) {
-						message = "An older version of " + addon.getName() + " is already installed. Do you want to update?\n" + installedAddon.getVersion() + " -> " + addon.getVersion();
-					} else if(compareResult > 0) {
-						message = "A newer version of " + addon.getName() + " is already installed. Do you want to downgrade?\n" + installedAddon.getVersion() + " -> " + addon.getVersion();
-					} else {
-						message = "The target version of " + addon.getName() + " is already installed. Do you want to install anyway?";
-					}
-					int dialogResult = JOptionPane.showConfirmDialog(null, message, TITLE, YES_NO_OPTION);
-					return dialogResult == YES_OPTION;
-				}).ifPresent(addon -> {
-					JOptionPane.showMessageDialog(null,addon.getName() + " has successfully been installed!", TITLE, INFORMATION_MESSAGE);
-				});
+		JButton installButton = this.installPane.getInstallButton();
+		installButton.setEnabled(false);
+		SwingWorker<Optional<Addon>, Void> worker = new SwingWorker<Optional<Addon>, Void>() {
+			@Override
+			protected Optional<Addon> doInBackground() throws Exception {
+				String installDir = InstallController.this.mainController.getInstallDir();
+				Installer.validateInstallationPath(installDir, true);
+				try(IAddonSource addonSource = InstallController.this.getAddonSource()) {
+					return Installer.install(addonSource, installDir, (addon, installedAddon, compareResult) -> {
+						String message;
+						if(compareResult < 0) {
+							message = "An older version of " + addon.getName() + " is already installed. Do you want to update?\n" + installedAddon.getVersion() + " -> " + addon.getVersion();
+						} else if(compareResult > 0) {
+							message = "A newer version of " + addon.getName() + " is already installed. Do you want to downgrade?\n" + installedAddon.getVersion() + " -> " + addon.getVersion();
+						} else {
+							message = "The target version of " + addon.getName() + " is already installed. Do you want to install anyway?";
+						}
+						int dialogResult = JOptionPane.showConfirmDialog(null, message, TITLE, YES_NO_OPTION);
+						return dialogResult == YES_OPTION;
+					});
+				}
 			}
-		} catch(Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage(), TITLE, ERROR_MESSAGE);
-		}
+			
+			@Override
+			protected void done() {
+				try {
+					this.get().ifPresent(addon -> {
+						JOptionPane.showMessageDialog(null,addon.getName() + " has successfully been installed!", TITLE, INFORMATION_MESSAGE);
+					});
+				} catch(Exception e) {
+					Throwable cause = e.getCause() != null ? e.getCause() : e;
+					JOptionPane.showMessageDialog(null, cause.getMessage(), TITLE, ERROR_MESSAGE);
+				}
+				installButton.setEnabled(true);
+			}
+		};
+		worker.execute();
 	}
 	
 	public void updateInterface() {
