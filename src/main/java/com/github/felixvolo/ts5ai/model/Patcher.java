@@ -67,9 +67,7 @@ public class Patcher {
 				if(Arrays.equals(currentBytes, patch.getVanillaBytes())) {
 					randomAccess.seek(patch.getOffset());
 					randomAccess.write(patch.getPatchedBytes(), 0, patch.getPatchedBytes().length);
-				} else if(Arrays.equals(currentBytes, patch.getPatchedBytes())) {
-					continue;
-				} else {
+				} else if(!Arrays.equals(currentBytes, patch.getPatchedBytes())) {
 					throw new IllegalStateException("Unexpected bytes for offset " + Long.toHexString(patch.getOffset()).toUpperCase() + " in file \"" + file.getName() + "\"");
 				}
 			}
@@ -95,11 +93,9 @@ public class Patcher {
 			File file = new File(installDir, entry.getKey());
 			FilePatch patch = entry.getValue();
 			String md5 = Util.md5sum(file);
-			if(md5.equalsIgnoreCase(patch.getPatched())) {
-				continue;
-			} else if(md5.equalsIgnoreCase(patch.getVanilla())) {
+			if(md5.equalsIgnoreCase(patch.getVanilla())) {
 				patchesToApply.add(new SimpleEntry<File, FilePatch>(file, patch));
-			} else {
+			} else if(!md5.equalsIgnoreCase(patch.getPatched())){
 				throw new IllegalStateException("Corrupted file " + entry.getKey());
 			}
 		}
