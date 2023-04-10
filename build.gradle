@@ -17,7 +17,7 @@ java {
     }
 }
 
-version = '2.1.0'
+version = '2.1.1' // TS5AddonInstaller.VERSION
 mainClassName = 'com.github.felixvolo.ts5ai.TS5AddonInstaller'
 
 dependencies {
