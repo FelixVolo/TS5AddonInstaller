@@ -56,7 +56,7 @@ public class Packer {
 						element.remove(src);
 						element.setText(data);
 					} catch(Exception e) {
-						System.err.println("Could not download referened remote file \"" + src.getValue() + "\" (" + e.getMessage() + "). Keeping reference.");
+						System.err.println("Could not download referenced remote file \"" + src.getValue() + "\" (" + e.getMessage() + "). Keeping reference.");
 					}
 				}
 			}
