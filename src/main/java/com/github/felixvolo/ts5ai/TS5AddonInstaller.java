@@ -16,7 +16,7 @@ import com.github.felixvolo.ts5ai.view.Window;
 import com.vdurmont.semver4j.Semver;
 
 public class TS5AddonInstaller {
-	public static final Semver VERSION = new Semver("2.1.1");
+	public static final Semver VERSION = new Semver("2.2.0");
 	public static void main(String... args) {
 		Options options = new Options();
 		Option patch = Option.builder()
