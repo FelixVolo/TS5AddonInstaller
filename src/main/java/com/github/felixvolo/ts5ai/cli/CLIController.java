@@ -46,7 +46,7 @@ public class CLIController {
 						}
 					}
 					return answer;
-				}).ifPresent(addon ->{
+				}).ifPresent(addon -> {
 					System.out.println(addon.getName() + " has successfully been installed!");
 				});
 			}

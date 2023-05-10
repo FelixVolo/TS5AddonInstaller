@@ -26,8 +26,7 @@ public class AddonEntry {
 			this.versionIndex = versionIndex;
 		}
 		
-		public URL getVersionIndex()
-		{
+		public URL getVersionIndex() {
 			return versionIndex;
 		}
 	}
