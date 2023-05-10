@@ -26,7 +26,7 @@ public class Util {
 			try(FileInputStream input = new FileInputStream(file)) {
 				byte[] buffer = new byte[8192];
 				int length = 0;
-				while((length = input.read(buffer)) > 0) {
+				while((length = input.read(buffer)) != -1) {
 					md5Digest.update(buffer, 0, length);
 				}
 			}
