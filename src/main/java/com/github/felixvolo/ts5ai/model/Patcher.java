@@ -102,7 +102,7 @@ public class Patcher {
 		return patchesToApply;
 	}
 	
-	private static Optional<Map<String, FilePatch>> loadFilePatches(String installDir, Semver ts5Version) throws Exception {
+	public static Optional<Map<String, FilePatch>> loadFilePatches(String installDir, Semver ts5Version) throws Exception {
 		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("patches.json");
 		Map<String, TS5Patch> patches = OBJECT_MAPPER.readValue(inputStream, new TypeReference<Map<String, TS5Patch>>() {});
 		if(!patches.containsKey(ts5Version.toString())) {
@@ -111,7 +111,7 @@ public class Patcher {
 		return patches.get(ts5Version.toString()).getFilePatches(OS.getOrThrow());
 	}
 	
-	private static DecodedPatch decodePatch(Patch patch) {
+	public static DecodedPatch decodePatch(Patch patch) {
 		long offset = Long.parseLong(patch.getOffset(), 16);
 		byte[] vanillaBytes = hexToBytes(patch.getVanilla());
 		byte[] patchedBytes = hexToBytes(patch.getPatched());

@@ -52,7 +52,7 @@ public class VersionIndex {
 			.orElseThrow(() -> new IllegalStateException("Unsupported TeamSpeak version.\nTry updating the installer."));
 	}
 	
-	private static String resolveTeamSpeakExecutable(OS os) {
+	public static String resolveTeamSpeakExecutable(OS os) {
 		switch(os) {
 			case WINDOWS:
 				return "TeamSpeak.exe";

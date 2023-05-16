@@ -37,7 +37,7 @@ public class Util {
 		}
 	}
 	
-	private static String bytesToHex(byte[] bytes) {
+	public static String bytesToHex(byte[] bytes) {
 		StringBuilder builder = new StringBuilder(bytes.length * 2);
 		for(byte b : bytes) {
 			builder.append(HEX_ALPHABET[(b >> 4) & 0xF]);
