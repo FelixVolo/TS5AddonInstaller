@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -21,15 +22,18 @@ public class Util {
 	}
 	
 	public static String md5sum(File file) throws FileNotFoundException, IOException {
+		return md5sum(new FileInputStream(file));
+	}
+	
+	public static String md5sum(InputStream inputStream) throws IOException {
 		try {
 			MessageDigest md5Digest = MessageDigest.getInstance("MD5");
-			try(FileInputStream input = new FileInputStream(file)) {
-				byte[] buffer = new byte[8192];
-				int length = 0;
-				while((length = input.read(buffer)) != -1) {
-					md5Digest.update(buffer, 0, length);
-				}
+			byte[] buffer = new byte[8192];
+			int length = 0;
+			while((length = inputStream.read(buffer)) != -1) {
+				md5Digest.update(buffer, 0, length);
 			}
+			inputStream.close();
 			byte[] digest = md5Digest.digest();
 			return bytesToHex(digest).toLowerCase();
 		} catch(NoSuchAlgorithmException e) {
