@@ -33,11 +33,12 @@ public class Util {
 			while((length = inputStream.read(buffer)) != -1) {
 				md5Digest.update(buffer, 0, length);
 			}
-			inputStream.close();
 			byte[] digest = md5Digest.digest();
 			return bytesToHex(digest).toLowerCase();
 		} catch(NoSuchAlgorithmException e) {
 			throw new RuntimeException("Could not get md5 algorithm");
+		} finally {
+			inputStream.close();
 		}
 	}
 	
