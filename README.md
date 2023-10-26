@@ -49,6 +49,7 @@ $ java -jar TS5AddonInstaller.jar [OPTIONS] <TEAMSPEAK_PATH>
 ## Compatibility ##
 | TeamSpeak | Windows | Linux | MacOS |
 | ------- | ------- | ----- | ----- |
+| Beta 76 | 2.4.0+ | 2.4.0+ | 2.4.0+ |
 | Beta 75 | 2.3.0+ | 2.3.0+ | 2.3.0+ |
 | Beta 74 | 2.2.0+ | 2.2.0+ | 2.2.0+ |
 | Beta 73 | 2.1.0+ | 2.1.0+ | 2.1.0+ |
