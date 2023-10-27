@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Scanner;
 
+import com.github.felixvolo.ts5ai.model.Addon;
 import com.github.felixvolo.ts5ai.model.FolderAddonSource;
 import com.github.felixvolo.ts5ai.model.IAddonSource;
 import com.github.felixvolo.ts5ai.model.InstalledAddon;
@@ -25,15 +26,7 @@ public class CLIController {
 					if(force) {
 						return true;
 					}
-					String message;
-					if(compareResult < 0) {
-						message = "An older version of " + addon.getName() + " is already installed. Do you want to update? (" + installedAddon.getVersion() + " -> " + addon.getVersion() + ")";
-					} else if(compareResult > 0) {
-						message = "A newer version of " + addon.getName() + " is already installed. Do you want to downgrade? (" + installedAddon.getVersion() + " -> " + addon.getVersion() + ")";
-					} else {
-						message = "The target version of " + addon.getName() + " is already installed. Do you want to install anyway?";
-					}
-					System.out.println(message + " [y/n]: ");
+					System.out.println(conflictMessage(addon, installedAddon, compareResult) + " [y/n]: ");
 					boolean answer = false;
 					while(scanner.hasNext()) {
 						String input = scanner.next();
@@ -46,13 +39,20 @@ public class CLIController {
 						}
 					}
 					return answer;
-				}).ifPresent(addon -> {
-					System.out.println(addon.getName() + " has successfully been installed!");
-				});
+				}).ifPresent(addon -> System.out.println(addon.getName() + " has successfully been installed!"));
 			}
 		} catch(Exception e) {
 			System.err.println(e.getMessage());
 		}
+	}
+	
+	private static String conflictMessage(Addon addon, InstalledAddon installedAddon, int compareResult) {
+		if(compareResult < 0) {
+			return "An older version of " + addon.getName() + " is already installed. Do you want to update? (" + installedAddon.getVersion() + " -> " + addon.getVersion() + ")";
+		} else if(compareResult > 0) {
+			return "A newer version of " + addon.getName() + " is already installed. Do you want to downgrade? (" + installedAddon.getVersion() + " -> " + addon.getVersion() + ")";
+		}
+		return "The target version of " + addon.getName() + " is already installed. Do you want to install anyway?";
 	}
 	
 	private static IAddonSource parseAddonSource(String addonPath) throws IllegalArgumentException {
