@@ -45,8 +45,7 @@ public class Patcher {
 						FilePatch filePatch = successfulPatch.getValue();
 						File backup = new File(successfulPatch.getKey() + ".bak");
 						if(backup.exists() && filePatch.getVanilla().equals(Util.md5sum(backup))) {
-							file.delete();
-							backup.renameTo(file);
+							Files.move(backup.toPath(), file.toPath(), REPLACE_EXISTING);
 						}
 					}
 					throw new IllegalStateException("Could not patch file " + entry.getKey());
@@ -76,13 +75,10 @@ public class Patcher {
 		String md5 = Util.md5sum(patched);
 		if(md5.equalsIgnoreCase(filePatch.getPatched())) {
 			File backup = new File(file.getAbsolutePath() + ".bak");
-			if(backup.exists()) {
-				backup.delete();
-			}
-			file.renameTo(backup);
-			patched.renameTo(file);
+			Files.move(file.toPath(), backup.toPath(), REPLACE_EXISTING);
+			Files.move(patched.toPath(), file.toPath(), REPLACE_EXISTING);
 		} else {
-			patched.delete();
+			Files.delete(patched.toPath());
 			throw new IllegalStateException("Patched file \"" + file.getName() + "\" failed validation check");
 		}
 	}
