@@ -28,7 +28,7 @@ import com.vdurmont.semver4j.Semver;
 
 public class Installer {
 	private static final int SCHEMA_VERSION = 1;
-	private static final Pattern ADDON_START_REGEX = Pattern.compile("<!-- ADDON_START v(\\d+) ([A-Za-z_0-9]+) ((?:\\d+\\.|\\d)*\\d) \"(.+)\" -->");
+	private static final Pattern ADDON_START_REGEX = Pattern.compile("<!-- ADDON_START v(\\d+) ([A-Za-z_0-9]+) ([^ ]+) \"(.+)\" -->");
 	private static final String ADDON_END_STRING = "<!-- ADDON_END -->";
 	private static final String CLIENT_UI_PATH = "/html/client_ui/";
 	private static final String ADDON_DEFINITION_FILE_NAME = "addon.json";
