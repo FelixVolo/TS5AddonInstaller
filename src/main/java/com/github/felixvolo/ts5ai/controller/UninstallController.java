@@ -6,6 +6,7 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 
 import java.awt.event.ActionEvent;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -38,7 +39,7 @@ public class UninstallController {
 		}
 		try {
 			List<InstalledAddon> installedAddons = Installer.installedAddons(installDir);
-			installedAddons.sort((a, b) -> a.getName().compareTo(b.getName()));
+			installedAddons.sort(Comparator.comparing(InstalledAddon::getName).thenComparing(Comparator.comparing(InstalledAddon::getVersion)));
 			this.uninstallPane.getAddonComboBox().removeAllItems();
 			for(InstalledAddon installedAddon : installedAddons) {
 				this.uninstallPane.getAddonComboBox().addItem(installedAddon);
@@ -65,10 +66,10 @@ public class UninstallController {
 		assert addon != null;
 		try {
 			Installer.uninstall(addon, installDir);
-			JOptionPane.showMessageDialog(null, "The addon " + addon.getName() + " has been successfully uninstalled", TITLE, INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "The addon " + addon + " has been successfully uninstalled", TITLE, INFORMATION_MESSAGE);
 			this.loadAddons(false);
 		} catch(Exception e) {
-			JOptionPane.showMessageDialog(null, "Error uninstalling addon " + addon.getName() + ":\n" + e.getMessage(), TITLE, ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Error uninstalling addon " + addon + ":\n" + e.getMessage(), TITLE, ERROR_MESSAGE);
 		}
 	}
 	
