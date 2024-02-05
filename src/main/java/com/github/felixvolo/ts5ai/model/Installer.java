@@ -50,13 +50,13 @@ public class Installer {
 		if(addon.getTeamSpeakVersion().isPresent()) {
 			Requirement requirement = addon.getTeamSpeakVersion().get();
 			if(!ts5version.satisfies(requirement)) {
-				throw new Exception("Addon " + addon.getName() + " requires TeamSpeak version " + requirement);
+				throw new Exception("Addon " + addon + " requires TeamSpeak version " + requirement);
 			}
 		}
 		if(addon.getInstallerVersion().isPresent()) {
 			Requirement requirement = addon.getInstallerVersion().get();
 			if(!VERSION.satisfies(requirement)) {
-				throw new Exception("Addon " + addon.getName() + " requires installer version " + requirement);
+				throw new Exception("Addon " + addon + " requires installer version " + requirement);
 			}
 		}
 		Patcher.patch(installDir, ts5version);
