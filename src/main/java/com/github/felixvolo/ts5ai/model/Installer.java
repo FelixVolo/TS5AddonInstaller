@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,9 +29,9 @@ import com.vdurmont.semver4j.Requirement;
 import com.vdurmont.semver4j.Semver;
 
 public class Installer {
-	private static final int SCHEMA_VERSION = 1;
-	private static final Pattern ADDON_START_REGEX = Pattern.compile("<!-- ADDON_START v(\\d+) ([A-Za-z_0-9]+) ([^ ]+) \"(.+)\" -->");
-	private static final String ADDON_END_STRING = "<!-- ADDON_END -->";
+	private static final int SCHEMA_VERSION = 2;
+	private static final Pattern ADDON_START_REGEX = Pattern.compile("<!-- ADDON_START v(\\d+) ([A-Za-z_0-9]+) ([^ ]+) \"(.+)\" (?:([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}) )?-->");
+	private static final String ADDON_END_STRING_V1 = "<!-- ADDON_END -->";
 	private static final String CLIENT_UI_PATH = "/html/client_ui/";
 	private static final String ADDON_DEFINITION_FILE_NAME = "addon.json";
 	private static final String INDEX = "index.html";
@@ -75,7 +77,7 @@ public class Installer {
 				}
 			}
 			String packedAddon = Packer.pack(addon, injectionString, addonSource, addonRoot);
-			String wrappedAddon = wrapAddonInject(packedAddon, addon);
+			String wrappedAddon = wrapAddonInject(packedAddon, addon, UUID.randomUUID());
 			index = addon.getInjectAt().inject(index, wrappedAddon, addon.getInjectionPoint());
 			IOUtils.writeFile(indexPath, index);
 			return Optional.of(addon);
@@ -123,8 +125,12 @@ public class Installer {
 		}
 	}
 	
-	private static String wrapAddonInject(String injectionString, Addon addon) throws JsonProcessingException {
-		return "<!-- ADDON_START v" + SCHEMA_VERSION + " " + addon.getId() + " " + addon.getVersion() + " \"" + addon.getName() + "\" -->" + injectionString + ADDON_END_STRING;
+	private static String wrapAddonInject(String injectionString, Addon addon, UUID installId) throws JsonProcessingException {
+		return "<!-- ADDON_START v" + SCHEMA_VERSION + " " + addon.getId() + " " + addon.getVersion() + " \"" + Base64.getEncoder().encodeToString(addon.getName().getBytes()) + "\" " + installId + " -->" + injectionString + addonEndStringV2(installId);
+	}
+	
+	private static String addonEndStringV2(UUID installId) {
+		return "<!-- ADDON_END " + installId + " -->";
 	}
 	
 	public static List<InstalledAddon> installedAddons(String installDir) throws Exception {
@@ -144,7 +150,15 @@ public class Installer {
 					Semver version = new Semver(matcher.group(3));
 					String name = matcher.group(4);
 					int startIndex = matcher.start();
-					int endIndex = index.indexOf(ADDON_END_STRING, startIndex) + ADDON_END_STRING.length();
+					int endIndex = index.indexOf(ADDON_END_STRING_V1, startIndex) + ADDON_END_STRING_V1.length();
+					addons.add(new InstalledAddon(id, name, version, startIndex, endIndex));
+				} else if(schemaVersion == 2) {
+					String id = matcher.group(2);
+					Semver version = new Semver(matcher.group(3));
+					String name = Base64.getDecoder().decode(matcher.group(4)).toString();
+					int startIndex = matcher.start();
+					String addonEndString = addonEndStringV2(UUID.fromString(matcher.group(4)));
+					int endIndex = index.indexOf(addonEndString, startIndex) + addonEndString.length();
 					addons.add(new InstalledAddon(id, name, version, startIndex, endIndex));
 				}
 			} catch(Exception e) {
