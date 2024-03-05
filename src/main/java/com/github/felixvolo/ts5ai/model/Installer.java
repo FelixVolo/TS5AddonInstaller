@@ -126,7 +126,20 @@ public class Installer {
 	}
 	
 	private static String wrapAddonInject(String injectionString, Addon addon, UUID installId) throws JsonProcessingException {
-		return "<!-- ADDON_START v" + SCHEMA_VERSION + " " + addon.getId() + " " + addon.getVersion() + " \"" + Base64.getEncoder().encodeToString(addon.getName().getBytes()) + "\" " + installId + " -->" + injectionString + addonEndStringV2(installId);
+		StringBuilder builder = new StringBuilder("<!-- ADDON_START v");
+		builder.append(SCHEMA_VERSION);
+		builder.append(" ");
+		builder.append(addon.getId());
+		builder.append(" ");
+		builder.append(addon.getVersion());
+		builder.append(" \"");
+		builder.append(Base64.getEncoder().encodeToString(addon.getName().getBytes()));
+		builder.append("\" ");
+		builder.append(installId);
+		builder.append(" -->");
+		builder.append(injectionString);
+		builder.append(addonEndStringV2(installId));
+		return builder.toString();
 	}
 	
 	private static String addonEndStringV2(UUID installId) {
