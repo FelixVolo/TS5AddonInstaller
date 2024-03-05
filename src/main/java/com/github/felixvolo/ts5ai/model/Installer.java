@@ -168,9 +168,9 @@ public class Installer {
 				} else if(schemaVersion == 2) {
 					String id = matcher.group(2);
 					Semver version = new Semver(matcher.group(3));
-					String name = Base64.getDecoder().decode(matcher.group(4)).toString();
+					String name = new String(Base64.getDecoder().decode(matcher.group(4)));
 					int startIndex = matcher.start();
-					String addonEndString = addonEndStringV2(UUID.fromString(matcher.group(4)));
+					String addonEndString = addonEndStringV2(UUID.fromString(matcher.group(5)));
 					int endIndex = index.indexOf(addonEndString, startIndex) + addonEndString.length();
 					addons.add(new InstalledAddon(id, name, version, startIndex, endIndex));
 				}
