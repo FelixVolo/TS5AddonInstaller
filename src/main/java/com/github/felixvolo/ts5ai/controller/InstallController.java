@@ -12,7 +12,7 @@ import static javax.swing.JOptionPane.YES_OPTION;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class InstallController {
 			while(iterator.hasNext()) {
 				Entry<String, JsonNode> entry = iterator.next();
 				if(entry.getValue().isTextual()) {
-					addons.add(new RemoteAddonEntry(entry.getKey(), new URL(entry.getValue().asText())));
+					addons.add(new RemoteAddonEntry(entry.getKey(), new URI(entry.getValue().asText()).toURL()));
 				}
 			}
 			addons.sort(Comparator.comparing(AddonEntry::getName));
@@ -222,12 +222,12 @@ public class InstallController {
 					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 				String version = versions.get(selectedVersion);
 				if(version != null) {
-					return new RemoteZipAddonSource(new URL(version));
+					return new RemoteZipAddonSource(new URI(version).toURL());
 				}
 			} else if(selectedVersion instanceof String) {
 				try {
 					List<Entry<Semver, String>> versions = Installer.loadVersions(remoteAddon.getVersionIndex());
-					return new RemoteZipAddonSource(new URL(versions.get(0).getValue()));
+					return new RemoteZipAddonSource(new URI(versions.get(0).getValue()).toURL());
 				} catch(Exception e) {
 					throw new Exception("Failed to load versions");
 				}

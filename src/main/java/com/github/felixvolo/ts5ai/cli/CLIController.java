@@ -1,7 +1,7 @@
 package com.github.felixvolo.ts5ai.cli;
 
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
 import java.util.List;
 import java.util.Scanner;
 
@@ -65,7 +65,7 @@ public class CLIController {
 					return new LocalZipAddonSource(addonPath);
 				}
 			} else {
-				return new RemoteZipAddonSource(new URL(addonPath));
+				return new RemoteZipAddonSource(new URI(addonPath).toURL());
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

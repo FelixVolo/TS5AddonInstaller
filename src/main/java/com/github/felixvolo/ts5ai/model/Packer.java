@@ -3,6 +3,7 @@ package com.github.felixvolo.ts5ai.model;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -49,7 +50,7 @@ public class Packer {
 					element.setText(data);
 				} else if(src.getValue().startsWith("https://") || src.getValue().startsWith("http://")) {
 					try {
-						URL url = new URL(src.getValue());
+						URL url = new URI(src.getValue()).toURL();
 						URLConnection connection = url.openConnection();
 						InputStream inputStream = connection.getInputStream();
 						String data = IOUtils.toString(inputStream);
