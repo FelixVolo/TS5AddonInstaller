@@ -77,3 +77,8 @@ tasks.withType<JavaCompile> {
 	options.encoding = "UTF-8"
 	options.release.set(JavaLanguageVersion.of(8).asInt())
 }
+
+tasks.withType<AbstractArchiveTask> {
+	isPreserveFileTimestamps = false
+	isReproducibleFileOrder = true
+}
