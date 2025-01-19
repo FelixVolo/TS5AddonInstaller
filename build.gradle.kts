@@ -74,8 +74,7 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<JavaCompile> {
-	options.encoding = "UTF-8"
-	options.release.set(JavaLanguageVersion.of(8).asInt())
+	options.encoding = Charsets.UTF_8.name()
 }
 
 tasks.withType<AbstractArchiveTask> {
