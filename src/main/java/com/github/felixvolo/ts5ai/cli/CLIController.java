@@ -2,6 +2,7 @@ package com.github.felixvolo.ts5ai.cli;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -34,7 +35,6 @@ public class CLIController {
 							answer = true;
 							break;
 						} else if(input.equalsIgnoreCase("n") || input.equalsIgnoreCase("no")) {
-							answer = false;
 							break;
 						}
 					}
@@ -103,7 +103,7 @@ public class CLIController {
 		try {
 			Installer.validateInstallationPath(installDir, true);
 			List<InstalledAddon> installedAddons = Installer.installedAddons(installDir);
-			installedAddons.sort((a, b) -> a.getName().compareTo(b.getName()));
+			installedAddons.sort(Comparator.comparing(InstalledAddon::getName));
 			for(InstalledAddon installedAddon : installedAddons) {
 				System.out.println(installedAddon.getName() + " (" + installedAddon.getId() + ") " + installedAddon.getVersion());
 			}

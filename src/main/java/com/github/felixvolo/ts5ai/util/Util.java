@@ -1,14 +1,13 @@
 package com.github.felixvolo.ts5ai.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Util {
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -21,15 +20,15 @@ public class Util {
 		return input;
 	}
 	
-	public static String md5sum(File file) throws FileNotFoundException, IOException {
-		return md5sum(new FileInputStream(file));
+	public static String md5sum(File file) throws IOException {
+		return md5sum(Files.newInputStream(file.toPath()));
 	}
 	
 	public static String md5sum(InputStream inputStream) throws IOException {
 		try {
 			MessageDigest md5Digest = MessageDigest.getInstance("MD5");
 			byte[] buffer = new byte[8192];
-			int length = 0;
+			int length;
 			while((length = inputStream.read(buffer)) != -1) {
 				md5Digest.update(buffer, 0, length);
 			}

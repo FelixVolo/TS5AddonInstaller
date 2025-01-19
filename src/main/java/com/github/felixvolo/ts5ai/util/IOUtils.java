@@ -2,17 +2,17 @@ package com.github.felixvolo.ts5ai.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class IOUtils {
 	public static String readFile(File file) throws IOException {
-		return toString(new FileInputStream(file));
+		return toString(Files.newInputStream(file.toPath()));
 	}
 	
 	public static String readFileFromZip(ZipFile zipFile, String path) throws IOException {

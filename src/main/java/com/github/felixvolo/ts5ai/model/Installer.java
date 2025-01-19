@@ -1,8 +1,10 @@
 package com.github.felixvolo.ts5ai.model;
 
-import static com.github.felixvolo.ts5ai.TS5AddonInstaller.VERSION;
-import static com.github.felixvolo.ts5ai.util.OS.MAC_OS;
-import static com.github.felixvolo.ts5ai.util.Util.OBJECT_MAPPER;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.felixvolo.ts5ai.util.IOUtils;
+import com.github.felixvolo.ts5ai.util.OS;
+import com.vdurmont.semver4j.Requirement;
+import com.vdurmont.semver4j.Semver;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,12 +23,9 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.github.felixvolo.ts5ai.util.IOUtils;
-import com.github.felixvolo.ts5ai.util.OS;
-import com.vdurmont.semver4j.Requirement;
-import com.vdurmont.semver4j.Semver;
+import static com.github.felixvolo.ts5ai.TS5AddonInstaller.VERSION;
+import static com.github.felixvolo.ts5ai.util.OS.MAC_OS;
+import static com.github.felixvolo.ts5ai.util.Util.OBJECT_MAPPER;
 
 public class Installer {
 	private static final int SCHEMA_VERSION = 2;
@@ -118,14 +117,14 @@ public class Installer {
 		}
 		File resourcesDir = new File(installDir, resolveTeamSpeakResources(OS.getOrThrow()));
 		if(!resourcesDir.exists() || !resourcesDir.isDirectory()) {
-			throw new IOException("Could not detect a valid TeamSpeak 5 installation in \"" + installDir.toString() + "\"");
+			throw new IOException("Could not detect a valid TeamSpeak 5 installation in \"" + installDir + "\"");
 		}
 		if(checkWritePermission && !Files.isWritable(installDir.toPath())) {
-			throw new IOException("Unable to modify current installation:\nMissing write permissions for \"" + installDir.toString() + "\"");
+			throw new IOException("Unable to modify current installation:\nMissing write permissions for \"" + installDir + "\"");
 		}
 	}
 	
-	private static String wrapAddonInject(String injectionString, Addon addon, UUID installId) throws JsonProcessingException {
+	private static String wrapAddonInject(String injectionString, Addon addon, UUID installId) {
 		StringBuilder builder = new StringBuilder("<!-- ADDON_START v");
 		builder.append(SCHEMA_VERSION);
 		builder.append(" ");
@@ -152,7 +151,7 @@ public class Installer {
 		return findInstalledAddons(index);
 	}
 	
-	private static List<InstalledAddon> findInstalledAddons(String index) throws Exception {
+	private static List<InstalledAddon> findInstalledAddons(String index) {
 		List<InstalledAddon> addons = new ArrayList<InstalledAddon>();
 		Matcher matcher = ADDON_START_REGEX.matcher(index);
 		while(matcher.find()) {
@@ -184,7 +183,7 @@ public class Installer {
 	public static List<Entry<Semver, String>> loadVersions(URL versionUrl) throws IOException {
 		Map<Semver, String> versionMap = OBJECT_MAPPER.readValue(versionUrl, new TypeReference<Map<Semver, String>>() {});
 		List<Entry<Semver, String>> versions = new ArrayList<Entry<Semver, String>>(versionMap.entrySet());
-		versions.sort(Comparator.comparing(Entry::getKey, Comparator.reverseOrder()));
+		versions.sort(Entry.comparingByKey(Comparator.reverseOrder()));
 		return versions;
 	}
 	

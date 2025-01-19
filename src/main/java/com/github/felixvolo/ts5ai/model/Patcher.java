@@ -30,13 +30,13 @@ import com.vdurmont.semver4j.Semver;
 
 public class Patcher {
 	public static void patch(String installDir, Semver ts5Version) throws Exception {
-		Optional<Map<String, FilePatch>> filePatches = loadFilePatches(installDir, ts5Version);
+		Optional<Map<String, FilePatch>> filePatches = loadFilePatches(ts5Version);
 		if(filePatches.isPresent()) {
 			Set<Entry<File, FilePatch>> patchesToApply = filterFilePatches(installDir, filePatches.get());
 			Set<Entry<File, FilePatch>> successfulPatches = new HashSet<Entry<File, FilePatch>>();
 			for(Entry<File, FilePatch> entry : patchesToApply) {
 				try {
-					applyFilePatches(installDir, entry.getKey(), entry.getValue());
+					applyFilePatches(entry.getKey(), entry.getValue());
 					successfulPatches.add(entry);
 				} catch(Exception e) {
 					// Revert changes
@@ -54,7 +54,7 @@ public class Patcher {
 		}
 	}
 	
-	private static void applyFilePatches(String installDir, File file, FilePatch filePatch) throws IOException, IllegalStateException {
+	private static void applyFilePatches(File file, FilePatch filePatch) throws IOException, IllegalStateException {
 		File patched = Files.createTempFile("", "").toFile();
 		Files.copy(file.toPath(), patched.toPath(), COPY_ATTRIBUTES, REPLACE_EXISTING);
 		try(RandomAccessFile randomAccess = new RandomAccessFile(patched, "rw")) {
@@ -98,7 +98,7 @@ public class Patcher {
 		return patchesToApply;
 	}
 	
-	public static Optional<Map<String, FilePatch>> loadFilePatches(String installDir, Semver ts5Version) throws Exception {
+	public static Optional<Map<String, FilePatch>> loadFilePatches(Semver ts5Version) throws Exception {
 		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("patches.json");
 		Map<String, TS5Patch> patches = OBJECT_MAPPER.readValue(inputStream, new TypeReference<Map<String, TS5Patch>>() {});
 		if(!patches.containsKey(ts5Version.toString())) {

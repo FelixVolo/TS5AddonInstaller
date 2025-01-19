@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-@SuppressWarnings("serial")
 public class InstallPane extends JPanel implements InstallDirPane {
 	private final JLabel installDirLabel = new JLabel("Installation Directory");
 	private final JTextField installDirTextField = new JTextField();

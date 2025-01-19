@@ -18,7 +18,7 @@ import com.github.felixvolo.ts5ai.util.IOUtils;
 import com.github.felixvolo.ts5ai.util.StringOutputStream;
 
 public class Packer {
-	private static final String NODE_SRCRIPT = "script";
+	private static final String NODE_SCRIPT = "script";
 	private static final String NODE_STYLE = "style";
 	private static final QName SRC_ATTRIBUTE = new QName("src");
 	
@@ -41,7 +41,7 @@ public class Packer {
 	}
 	
 	private static void packElement(Element element, IAddonSource source, String addonRoot, String sources) throws IOException {
-		if(NODE_SRCRIPT.equals(element.getName()) || NODE_STYLE.equals(element.getName())) {
+		if(NODE_SCRIPT.equals(element.getName()) || NODE_STYLE.equals(element.getName())) {
 			Attribute src = element.attribute(SRC_ATTRIBUTE);
 			if(src != null) {
 				if(src.getValue().startsWith(sources)) {
@@ -62,8 +62,8 @@ public class Packer {
 				}
 			}
 		}
-		// We want <script></script> and not <script/>
-		if(NODE_SRCRIPT.equals(element.getName()) && !element.hasContent()) {
+		// Workaround to create <script></script> instead of <script/>
+		if(NODE_SCRIPT.equals(element.getName()) && !element.hasContent()) {
 			element.setText("");
 		}
 		for(Element child : element.elements()) {

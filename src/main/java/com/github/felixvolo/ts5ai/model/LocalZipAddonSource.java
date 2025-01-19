@@ -20,10 +20,6 @@ public class LocalZipAddonSource extends AbstractZipAddonSource {
 		this.zipFile = new ZipFile(file);
 	}
 	
-	public String getPath() {
-		return this.path;
-	}
-	
 	@Override
 	public void close() throws Exception {
 		if(this.zipFile != null) {

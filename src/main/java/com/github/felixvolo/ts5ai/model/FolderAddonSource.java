@@ -37,10 +37,6 @@ public class FolderAddonSource implements IAddonSource {
 			.iterator();
 	}
 	
-	public String getRoot() {
-		return this.root;
-	}
-	
 	@Override
-	public void close() throws Exception {}
+	public void close() {}
 }

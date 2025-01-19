@@ -39,7 +39,7 @@ public class UninstallController {
 		}
 		try {
 			List<InstalledAddon> installedAddons = Installer.installedAddons(installDir);
-			installedAddons.sort(Comparator.comparing(InstalledAddon::getName).thenComparing(Comparator.comparing(InstalledAddon::getVersion)));
+			installedAddons.sort(Comparator.comparing(InstalledAddon::getName).thenComparing(InstalledAddon::getVersion));
 			this.uninstallPane.getAddonComboBox().removeAllItems();
 			for(InstalledAddon installedAddon : installedAddons) {
 				this.uninstallPane.getAddonComboBox().addItem(installedAddon);

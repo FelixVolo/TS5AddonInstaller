@@ -73,16 +73,16 @@ public class TS5AddonInstaller {
 			} else if(cmd.hasOption(version)) {
 				System.out.println("Version: " + VERSION);
 			} else if(cmd.hasOption(install)) {
-				checkArgListSize(cmd);
+				requireSingleArg(cmd);
 				CLIController.install(cmd.getArgList().get(0), cmd.getOptionValue(install), cmd.hasOption(force));
 			} else if(cmd.hasOption(uninstall)) {
-				checkArgListSize(cmd);
+				requireSingleArg(cmd);
 				CLIController.uninstall(cmd.getArgList().get(0), cmd.getOptionValue(uninstall));
 			} else if(cmd.hasOption(listInstalled)) {
-				checkArgListSize(cmd);
+				requireSingleArg(cmd);
 				CLIController.listInstalledAddons(cmd.getArgList().get(0));
 			} else if(cmd.hasOption(patch)) {
-				checkArgListSize(cmd);
+				requireSingleArg(cmd);
 				CLIController.patch(cmd.getArgList().get(0));
 			} else {
 				Window.setupNativeLook();
@@ -100,12 +100,12 @@ public class TS5AddonInstaller {
 		formatter.printHelp("TS5AddonInstaller [OPTIONS] <TEAMSPEAK_PATH>", options);
 	}
 	
-	private static void checkArgListSize(CommandLine cmd) throws ParseException {
-		checkArgListSize(1, cmd);
+	private static void requireSingleArg(CommandLine cmd) throws ParseException {
+		requireArgCount(1, cmd);
 	}
 	
-	private static void checkArgListSize(int size, CommandLine cmd) throws ParseException {
-		if(cmd.getArgList().size() != size) {
+	private static void requireArgCount(int count, CommandLine cmd) throws ParseException {
+		if(cmd.getArgList().size() != count) {
 			throw new ParseException("Invalid installation path");
 		}
 	}

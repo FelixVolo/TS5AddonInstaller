@@ -32,7 +32,6 @@ public class MainController implements Runnable {
 	});
 	private final Window window = new Window();
 	private final InstallController installController = new InstallController(this);
-	private final UninstallController uninstallController = new UninstallController(this);
 	
 	public MainController() {
 		this.window.getTabbedPane().addChangeListener(this::onTabChanged);
@@ -41,7 +40,8 @@ public class MainController implements Runnable {
 		installPane.getInstallDirTextField().setText(this.installDir);
 		installPane.getInstallDirTextField().getDocument().addDocumentListener(documentListener);
 		installPane.getSelectInstallDirButton().addActionListener(this::selectInstallDir);
-		UninstallPane uninstallPane = this.uninstallController.getUninstallPane();
+		UninstallController uninstallController = new UninstallController(this);
+		UninstallPane uninstallPane = uninstallController.getUninstallPane();
 		uninstallPane.getInstallDirTextField().setText(this.installDir);
 		uninstallPane.getInstallDirTextField().getDocument().addDocumentListener(documentListener);
 		uninstallPane.getSelectInstallDirButton().addActionListener(this::selectInstallDir);

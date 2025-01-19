@@ -17,7 +17,7 @@ public abstract class AbstractZipAddonSource implements IAddonSource {
 	}
 	
 	@Override
-	public Iterator<String> entries() throws IOException {
+	public Iterator<String> entries() {
 		this.ensureOpen();
 		return this.zipFile.stream().map(ZipEntry::getName).iterator();
 	}

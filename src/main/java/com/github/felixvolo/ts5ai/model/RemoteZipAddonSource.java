@@ -33,10 +33,6 @@ public class RemoteZipAddonSource extends AbstractZipAddonSource {
 		}
 	}
 	
-	public URL getUrl() {
-		return this.url;
-	}
-	
 	@Override
 	public void close() throws Exception {
 		if(this.zipFile != null) {

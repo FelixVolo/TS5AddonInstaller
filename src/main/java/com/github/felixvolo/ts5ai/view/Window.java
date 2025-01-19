@@ -5,10 +5,10 @@ import static com.github.felixvolo.ts5ai.TS5AddonInstaller.VERSION;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
-@SuppressWarnings("serial")
 public class Window extends JFrame {
-	public static final String TITLE = "TS5 Addon Installer " + VERSION.toString();
+	public static final String TITLE = "TS5 Addon Installer " + VERSION;
 	
 	private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 	private final InstallPane installPane = new InstallPane();
@@ -22,7 +22,7 @@ public class Window extends JFrame {
 	}
 	
 	public void showWindow() {
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.pack();
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);

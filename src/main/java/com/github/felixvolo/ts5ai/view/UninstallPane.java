@@ -15,7 +15,6 @@ import javax.swing.JTextField;
 
 import com.github.felixvolo.ts5ai.model.InstalledAddon;
 
-@SuppressWarnings("serial")
 public class UninstallPane extends JPanel implements InstallDirPane {
 	private final JLabel installDirLabel = new JLabel("Installation Directory");
 	private final JTextField installDirTextField = new JTextField();
