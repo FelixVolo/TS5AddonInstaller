@@ -1,6 +1,6 @@
 # TS5 Addon Installer #
 The TS5 Addon Installer is an unofficial tool that simplifies the process of installing and managing addons for TeamSpeak 5.
-It featues a builtin patcher to re-enable addon support for the latest versions of TeamSpeak 5.
+It features a builtin patcher to re-enable addon support for the latest versions of TeamSpeak 5.
 
 ⚠️ Addons need to be reinstalled after every TeamSpeak update
 
