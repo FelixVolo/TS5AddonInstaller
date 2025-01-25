@@ -152,7 +152,11 @@ public class Patcher {
 		private final Map<String, FilePatch> linux;
 		private final Map<String, FilePatch> macos;
 		
-		public TS5Patch(@JsonProperty("windows") Map<String, FilePatch> windows, @JsonProperty("linux") Map<String, FilePatch> linux, @JsonProperty("macos") Map<String, FilePatch> macos) {
+		public TS5Patch(
+			@JsonProperty("windows") Map<String, FilePatch> windows,
+			@JsonProperty("linux") Map<String, FilePatch> linux,
+			@JsonProperty("macos") Map<String, FilePatch> macos
+		) {
 			this.windows = windows;
 			this.linux = linux;
 			this.macos = macos;
@@ -180,7 +184,11 @@ public class Patcher {
 			private final String patched;
 			private final List<Patch> patches;
 			
-			public FilePatch(@JsonProperty("vanilla") String vanilla, @JsonProperty("patched") String patched, @JsonProperty("patches") List<Patch> patches) {
+			public FilePatch(
+				@JsonProperty("vanilla") String vanilla,
+				@JsonProperty("patched") String patched,
+				@JsonProperty("patches") List<Patch> patches
+			) {
 				this.vanilla = vanilla;
 				this.patched = patched;
 				this.patches = patches;
@@ -208,7 +216,11 @@ public class Patcher {
 				private final String vanilla;
 				private final String patched;
 				
-				public Patch(@JsonProperty("offset") String offset, @JsonProperty("vanilla") String vanilla, @JsonProperty("patched") String patched) {
+				public Patch(
+					@JsonProperty("offset") String offset,
+					@JsonProperty("vanilla") String vanilla,
+					@JsonProperty("patched") String patched
+				) {
 					this.offset = offset;
 					this.vanilla = vanilla;
 					this.patched = patched;

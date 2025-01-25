@@ -20,7 +20,11 @@ public class VersionIndex {
 	private final Map<String, String> linux;
 	private final Map<String, String> macos;
 	
-	public VersionIndex(@JsonProperty("windows") Map<String, String> windows, @JsonProperty("linux") Map<String, String> linux, @JsonProperty("macos") Map<String, String> macos) {
+	public VersionIndex(
+		@JsonProperty("windows") Map<String, String> windows,
+		@JsonProperty("linux") Map<String, String> linux,
+		@JsonProperty("macos") Map<String, String> macos
+	) {
 		this.windows = windows;
 		this.linux = linux;
 		this.macos = macos;

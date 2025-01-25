@@ -21,7 +21,17 @@ public class Addon {
 	private final Optional<Requirement> installerVersion;
 	private final Optional<Requirement> teamSpeakVersion;
 	
-	public Addon(@JsonProperty("name") String name, @JsonProperty("id") String id, @JsonProperty("version") Semver version, @JsonProperty("inject") String inject, @JsonProperty("injection_point") InjectionPoint injectionPoint, @JsonProperty("inject_at") InjectAt injectAt, @JsonProperty("sources") String sources, @JsonProperty("installer") String installerVersion, @JsonProperty("teamspeak") String teamSpeakVersion) throws Exception {
+	public Addon(
+		@JsonProperty("name") String name,
+		@JsonProperty("id") String id,
+		@JsonProperty("version") Semver version,
+		@JsonProperty("inject") String inject,
+		@JsonProperty("injection_point") InjectionPoint injectionPoint,
+		@JsonProperty("inject_at") InjectAt injectAt,
+		@JsonProperty("sources") String sources,
+		@JsonProperty("installer") String installerVersion,
+		@JsonProperty("teamspeak") String teamSpeakVersion
+	) throws Exception {
 		this.name = Objects.requireNonNull(name, "Missing addon name");
 		this.id = Util.validate(Objects.requireNonNull(id, "Missing addon id"), "[A-Za-z_0-9]+");
 		this.version = Objects.requireNonNull(version, "Missing addon version");
