@@ -190,6 +190,7 @@ public class InstallController {
 					});
 				} catch(Exception e) {
 					Throwable cause = e.getCause() != null ? e.getCause() : e;
+					cause.printStackTrace();
 					JOptionPane.showMessageDialog(null, cause.getMessage(), TITLE, ERROR_MESSAGE);
 				}
 				installButton.setEnabled(true);
