@@ -48,7 +48,7 @@ public class Patcher {
 							Files.move(backup.toPath(), file.toPath(), REPLACE_EXISTING);
 						}
 					}
-					throw new IllegalStateException("Could not patch file " + entry.getKey());
+					throw new IllegalStateException("Could not patch file " + entry.getKey(), e);
 				}
 			}
 		}
