@@ -1,3 +1,6 @@
+> [!NOTE]  
+> This project is deprecated. You may still use it for TeamSpeak 5. For future TeamSpeak releases please  use: [TS6AddonInstaller](https://github.com/Exopandora/TS6AddonInstaller 'TS6AddonInstaller')
+
 # TS5 Addon Installer #
 The TS5 Addon Installer is an unofficial tool that simplifies the process of installing and managing addons for TeamSpeak 5.
 It features a builtin patcher to re-enable addon support for the latest versions of TeamSpeak 5.
